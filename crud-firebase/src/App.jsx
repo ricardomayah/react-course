@@ -5,6 +5,8 @@ const App = ()  => {
 
   const [tareas,setTareas] = React.useState([])
   const [ tarea , setTarea ] = React.useState('')
+  const [modoEdicion, setModoEdicion] = React.useState(false)
+  const [Id,setId] = React.useState('')
 
   React.useEffect(() => {
 
@@ -70,6 +72,17 @@ const App = ()  => {
     }
   }
 
+  const activarEditar = (tarea) => {
+    setTarea(tarea.name)
+    setModoEdicion(true)
+  }
+
+
+  const editar = async () => {
+    modoEdicion(false)
+    setTarea('')
+  }
+
   return (
     <div>
       <div className="container mt-3">
@@ -85,7 +98,10 @@ const App = ()  => {
                      >
                        Eliminar
                      </button>
-                     <button className="btn btn-warning btn-sm float-right mr-2">
+                     <button 
+                      className="btn btn-warning btn-sm float-right mr-2"
+                      onClick={() => activarEditar(tarea)}
+                     >
                        Editar
                      </button>
                   </div>
@@ -94,7 +110,7 @@ const App = ()  => {
             </div>
           </div>
           <div className="col-md-6">
-            <form onSubmit={agregar}>
+            <form onSubmit={modoEdicion ? editar : agregar}>
               <input 
               type="text"
               placeholder="INgrese tarea"
@@ -102,10 +118,14 @@ const App = ()  => {
               onChange={e => setTarea(e.target.value)}
               value={tarea}/>
               <button
-                className="btn btn-dark btn-block"
+                className={
+                  modoEdicion ? 'btn btn-warning btn-block' : 'btn btn-dark btn-block'
+                }
                 type="submit"
               >
-                Agregar
+                {
+                  modoEdicion ? 'Editar' : 'Agregar'
+                }
               </button>
             </form>
           </div>
