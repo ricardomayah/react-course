@@ -1,3 +1,4 @@
+import { firestore } from 'firebase';
 import React from 'react';
 import {firebase} from './firebase'
 
@@ -75,12 +76,29 @@ const App = ()  => {
   const activarEditar = (tarea) => {
     setTarea(tarea.name)
     setModoEdicion(true)
+    setId(tarea.id)
   }
 
 
-  const editar = async () => {
-    modoEdicion(false)
-    setTarea('')
+  const editar = async (e) => {
+    e.preventDefault()
+    if(tarea.trim()){
+      try {
+        const db = firebase.firestore()
+        await db.collection("tareas").doc(Id).update({name:tarea})
+        const newArray = tareas.map(item => {
+          return item.id === Id ? {id: item.id , fecha: item.fecha,name: tarea}: item
+        })
+        setTareas(newArray)
+      } catch (error) {
+        console.log(error)
+      }
+   }else{
+    console.log("vacio")
+   }
+   setModoEdicion(false)
+   setTarea('')
+   setId('')
   }
 
   return (
